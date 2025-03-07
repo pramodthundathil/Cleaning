@@ -1,0 +1,45 @@
+{% extends 'service/index.html'%}
+{% block merchant %}
+
+<div class="container">
+
+    <h4>Bookings</h4>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Booked By</th>
+                <th scope="col">Service</th>
+                <th scope="col">Description</th>
+                <th scope="col">Date of Booking</th>
+                <th scope="col">Booked Date</th>
+                <th scope="col">Approve</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.booked_by.username }}</td>
+                <td>{{ booking.service.name }}</td>
+                <td>{{ booking.description }}</td>
+                <td>{{ booking.date_of_booking }}</td>
+                <td>{{ booking.booked_date }}</td>
+                <td>{{ booking.approve|yesno:"Yes , No" }}</td>
+                <td>
+                    <form method="post" action="{% url 'approve_booking' booking.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">Approve</button>
+                    </form>
+                    <form method="post" action="{% url 'reject_booking' booking.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Reject</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'admin_index.html' %}
+{% block admin %}
+
+
+
+<div class="container mt-5 mb-5">
+   
+ <!-- Button to trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+   + Add User
+</button>
+{% for message in messages %}
+<div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+    <strong>Hey!</strong> {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+{% endfor %}
+<br><br>
+
+    <h2>User List - Heloooo</h2>
+    <table class="table table-striped mt-5">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Phone Number</th>
+                <th>Username</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.email }}</td>
+                <td>{{ user.first_name }}</td>
+               
+                <td>{{ user.phone }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.volunteer.address }}</td>
+                <td>{{ user.volunteer.city }}</td>
+                <td>
+                    <a href="{% url 'user_update' user.id %}" class="btn btn-warning">Edit</a>
+                    <a href="{% url 'user_delete' user.id %}" onclick="return confirm('Are You sure want to delete ??')" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- Modal for Adding User -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" >
+                    {% csrf_token %}
+
+                   {{ form1.as_p }}
+                   {{ form2.as_p }}
+                   <br>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

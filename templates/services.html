@@ -1,0 +1,63 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5 mb-5">
+
+      <!-- Featured Services -->
+      <section class="services-section" id="services">
+        <div class="container">
+            <h2 class="text-center section-title">Cleaning Services</h2>
+            <div class="row">
+
+                {% for service in services %}
+                <div class="col-md-4">
+                    <div class="service-card card">
+                        <!-- <img src="{%static 'images/home-cleaning.jpg' %}" class="card-img-top" alt="Home Cleaning"> -->
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{service.service_category}}</h5>
+                            <h4>Rs. {{service.rate_per_hour}} / Hour</h4>
+                            <p class="card-text">{{service.description}}</p>
+                            <p>Company: {{service.servicer}}</p>
+                            <a data-bs-toggle="modal" data-bs-target="#exampleModal{{service.id}}" class="btn btn-primary">Book Now</a>
+
+
+  
+ 
+                        </div>
+                    </div>
+                </div>
+                 <!-- Modal -->
+  <div class="modal fade" id="exampleModal{{service.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Book Service {{service.service_category}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="{%url 'book_service' service.id  %}" method="post">
+            {% csrf_token %}
+
+            {{form.as_p}}
+            <br>
+          <button type="submit" class="btn btn-primary">Book Now</button>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+                {% endfor %}
+                
+            </div>
+        </div>
+    </section>
+</div>
+
+
+{% endblock %}
