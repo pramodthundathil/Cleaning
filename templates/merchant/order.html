@@ -18,12 +18,14 @@
             <th>Product</th>
             <th>User</th>
             <th>Created At</th>
-            <th>Last Update</th>
+            <!-- <th>Last Update</th> -->
             <th>Total Amount</th>
             <th>Total Tax</th>
             <th>Total Quantity</th>
             <th>Checkout Status</th>
             <th>Payment Status</th>
+            <th>Order Status</th>
+            <th>Update Status</th>
         </tr>
     </thead>
     <tbody>
@@ -33,7 +35,7 @@
             <td>{{ order_items.product}}</td>
             <td>{{ order_items.order.user.username }}</td>
             <td>{{ order_items.order.created_at }}</td>
-            <td>{{ order_items.order.last_update }}</td>
+            <!-- <td>{{ order_items.order.last_update }}</td> -->
             <td>{{ order_items.total_price }}</td>
             <td>{{ order_items.total_tax }}</td>
             <td>{{order_items.quantity}}</td>
@@ -53,6 +55,16 @@
 
                 {% endif %}
                 </td>
+                <td>{{order_items.order_status}}</td>
+                <td>
+                <div class="btn-group" role="group">
+                    <a href="{% url 'update_order_status' order_items.id 'pending' %}" class="btn btn-warning btn-sm">Pending</a>
+                    <a href="{% url 'update_order_status' order_items.id 'processing' %}" class="btn btn-info btn-sm">Processing</a>
+                    <a href="{% url 'update_order_status' order_items.id 'shipped' %}" class="btn btn-primary btn-sm">Shipped</a>
+                    <a href="{% url 'update_order_status' order_items.id 'delivered' %}" class="btn btn-success btn-sm">Delivered</a>
+                </div>
+                </td>
+
         </tr>
         {% endfor %}
     </tbody>

@@ -336,6 +336,32 @@ def orders(request):
     return render(request,"orders.html",context)
 
 
+def view_single_order(request, pk):
+    order = get_object_or_404(Order, id = pk)
+    context = {
+        "order":order
+    }
+    return render(request,"view_single_order.html",context)
+
+# def order_status_update(request, pk):
+#     order = get_object_or_404(OrderItems, id = pk)
+#     order.order_status = request.POST.get("status")
+#     order.save()
+#     return redirect("orders")
+
+
+@login_required(login_url="signin")
+def update_order_status(request, order_id, status):
+    order = get_object_or_404(OrderItems, id=order_id)
+    order.order_status = status
+    order.save()
+    if status == "delivered":
+        order.order.order_status = "delivered"
+        order.order.save()
+    messages.success(request, f"Order status updated to {status.capitalize()}")
+    return redirect("orders_merchant")
+
+
 @login_required(login_url="signin")
 def orders_merchant(request):
     order_items = OrderItems.objects.filter(product__merchant = request.user)
@@ -395,3 +421,81 @@ def delete_category(request, pk):
     category.delete()
     messages.success(request, "Category deleted successfully")
     return redirect("category")
+
+
+
+# review and rating
+
+from  .models import ReviewAndRating, Promotions
+from .forms import PromotionsForm
+
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Avg, Count  # Import Avg and Count
+from .models import  ReviewAndRating  # Import your models
+
+def product_details(request, pk):
+    product = get_object_or_404(Products, id=pk)
+
+    # Total number of reviews
+    total_reviews = product.product_reviews.count()
+
+    # Average rating
+    average_rating = product.product_reviews.aggregate(average_rating=Avg('rating'))['average_rating'] or 0
+    average_rating = round(average_rating, 2)
+
+    # Mode rating (most frequently occurring rating)
+    mode_rating = product.product_reviews.values('rating').annotate(count=Count('rating')).order_by('-count').first()
+    mode_rating = mode_rating['rating'] if mode_rating else None  # Handle empty case
+
+    context = {
+        "product": product,
+        "total_reviews": total_reviews,
+        "average_rating": average_rating,
+        "mode_rating": mode_rating,  # Add mode to context
+    }
+    return render(request, "product_single.html", context)
+
+@login_required(login_url="signin")
+def add_review(request, pk):
+    product = get_object_or_404(Products, id = pk)
+    if request.method == "POST":
+        review = request.POST.get("review")
+        rating = request.POST.get("rating")
+
+        data = ReviewAndRating.objects.create(product = product ,user = request.user,rating = rating, review = review  )
+        data.save()
+        return redirect("product_details", pk = pk)
+    
+
+
+def promotions_offers(request):
+    promotions = Promotions.objects.filter(is_active = True)
+
+    context = {
+        "promotions":promotions
+    }
+    return render(request,"promotions.html",context)
+
+
+def Add_merchant_promotions(request):
+    form = PromotionsForm()
+    promotions = Promotions.objects.filter(user = request.user)
+    if request.method == "POST":
+        form = PromotionsForm(request.POST, request.FILES)
+        if form.is_valid():
+            promotion = form.save(commit=False)
+            promotion.user = request.user
+            promotion.save()
+            messages.success(request, "Promotion added successfully")
+            return redirect("Add_merchant_promotions")
+        
+    context = {"form":form,"promotions":promotions}
+    return render(request,"merchant/promotions.html",context)
+
+@login_required(login_url="signin")
+def delete_promotion(request, pk):
+    promotion = get_object_or_404(Promotions, id=pk)
+    promotion.image.delete()
+    promotion.delete()
+    messages.success(request, "Promotion deleted successfully")
+    return redirect("promotions_offers")

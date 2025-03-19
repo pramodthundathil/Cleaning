@@ -15,12 +15,13 @@
             <th>Order Number</th>
             <th>User</th>
             <th>Created At</th>
-            <th>Last Update</th>
+            <!-- <th>Last Update</th> -->
             <th>Total Amount</th>
-            <th>Total Tax</th>
-            <th>Total Amount Before Tax</th>
+            <!-- <th>Total Tax</th> -->
+            <!-- <th>Total Amount Before Tax</th> -->
             <th>Checkout Status</th>
             <th>Payment Status</th>
+            <th>Order Status</th>
             <th>Invoice</th>
         </tr>
     </thead>
@@ -30,10 +31,10 @@
             <td>{{ order.order_number }}</td>
             <td>{{ order.user.username }}</td>
             <td>{{ order.created_at }}</td>
-            <td>{{ order.last_update }}</td>
+            <!-- <td>{{ order.last_update }}</td> -->
             <td>{{ order.total_amount }}</td>
-            <td>{{ order.total_tax }}</td>
-            <td>{{ order.total_amount_before_tax }}</td>
+            <!-- <td>{{ order.total_tax }}</td> -->
+            <!-- <td>{{ order.total_amount_before_tax }}</td> -->
             <td>
                 {% if  order.check_out_status == True %}
                 <span class="badge bg-success">Completed</span>
@@ -43,14 +44,16 @@
                 {% endif %}
             </td>
             <td>
-                {% if  order.payment_status == True %}
+                <a href="{%url 'view_single_order' order.id %}" class="btn btn-sm btn-outline-info">View Order</a>
+                <!-- {% if  order.payment_status == True %}
                 <span class="badge bg-success">Completed</span>
                 {% else %}
                 <span class="badge bg-warning">Pending</span>
 
-                {% endif %}
+                {% endif %} -->
                 </td>
-                <td><a href="{%url 'Generate_invoice' order.id %}" class="btn  btn-sm btn-outline-dark">View Invoice</a></td>
+                <td>{{order.order_status}}</td>
+                <td class="text-info"><a href="{%url 'Generate_invoice' order.id %}" class="btn  btn-sm btn-outline-dark">View Invoice</a></td>
         </tr>
         {% endfor %}
     </tbody>

@@ -1,0 +1,107 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<style>
+    .content{
+        margin: auto;
+        margin-top: 100px;
+        max-width: 900px;
+        text-align: center;
+        padding: 20px;
+        border: 1px solid;
+        border-radius: 20px;
+    }
+</style>
+
+<div class="container">
+    <div class="content">
+        <h3> Order {{ order.order_number }}</h3>
+        <table class="table table-bordered">
+            <tr>
+                <th>Order Number</th>
+                <td>{{ order.order_number }}</td>
+            </tr>
+            <tr>
+                <th>User</th>
+                <td>{{ order.user.username }}</td>
+            </tr>
+            <tr>
+                <th>Created At</th>
+                <td>{{ order.created_at }}</td>
+            </tr>
+            <tr>
+                <th>Total Amount</th>
+                <td>{{ order.total_amount }}</td>
+            </tr>
+            <tr>
+                <th>Total Tax</th>
+                <td>{{ order.total_tax }}</td>
+            </tr>
+            <tr>
+                <th>Total Amount Before Tax</th>
+                <td>{{ order.total_amount_before_tax }}</td>
+            </tr>
+            <tr>
+                <th>Checkout Status</th>
+                <td>
+                    {% if  order.check_out_status == True %}
+                    <span class="badge bg-success">Completed</span>
+                    {% else %}
+                    <span class="badge bg-warning">Pending</span>
+
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Payment Status</th>
+                <td>
+                    {% if  order.payment_status == True %}
+                    <span class="badge bg-success">Completed</span>
+                    {% else %}
+                    <span class="badge bg-warning">Pending</span>
+
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Order Status</th>
+                <td>{{ order.order_status }}</td>
+            </tr>
+            <tr>
+                <th>Invoice</th>
+                <td class="text-info"><a href="{% url 'Generate_invoice' order.id %}" class="btn  btn-sm btn-outline-dark">View Invoice</a></td>
+            </tr>
+        </table>
+        <h5>Order Items</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order_item in order.order_items.all %}
+                <tr>
+                    <td>{{ order_item.product }}</td>
+                    <td>{{ order_item.quantity }}</td>
+                    <td>{{ order_item.product.price }}</td>
+                    <td>{{ order_item.total_price }}</td>
+                    <td>{{ order.order_status}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+    </div>
+
+
+
+    </div>
+</div>
+
+{% endblock %}

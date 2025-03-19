@@ -115,6 +115,8 @@ class Order(models.Model):
     order_number = models.CharField(max_length=20)
     payment_order_id = models.CharField(max_length=100,null=True, blank=True )
 
+    order_status = models.CharField(max_length=20, choices=(("pending","pending"),("processing","processing"),("shipped","shipped"),("delivered","delivered")), default="pending")
+
     def update_totals(self):
         order_items = self.order_items.all()
         total_price = 0
@@ -151,6 +153,7 @@ class OrderItems(models.Model):
     quantity = models.FloatField(default=1)
     total_price = models.FloatField(default=0)
     total_tax = models.FloatField(default=0)
+    order_status = models.CharField(max_length=20, choices=(("pending","pending"),("processing","processing"),("shipped","shipped"),("delivered","delivered")), default="pending")
 
     def save(self, *args, **kwargs):
         price = self.product.price
@@ -162,3 +165,27 @@ class OrderItems(models.Model):
 
     
 
+
+
+class ReviewAndRating(models.Model):
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name="product_reviews")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="reviews")
+    rating = models.PositiveIntegerField(default=1)
+    review = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name} - {self.rating}"
+
+    class Meta:
+        ordering = ["-created_at"]
+
+
+class Promotions(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="promotions")
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_active = models.BooleanField(default=True)
+    image = models.FileField(upload_to="promotion_images")

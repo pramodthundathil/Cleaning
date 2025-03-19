@@ -1,0 +1,399 @@
+{% extends 'index.html' %}
+{% block content %}
+<style>
+     :root {
+            --primary-color: #0077b6;
+            --secondary-color: #00b4d8;
+            --accent-color: #90e0ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+
+    .product-container {
+        background-color: var(--light-color);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-top: 30px;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .product-title {
+        color: var(--dark-color);
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .product-category {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        margin-bottom: 15px;
+        display: inline-block;
+    }
+
+    .product-price {
+        font-size: 26px;
+        font-weight: 600;
+        color: var(--dark-color);
+    }
+
+    .tax-details {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .stock-info {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        display: inline-block;
+    }
+    
+    .low-stock {
+        background-color: var(--accent-color);
+    }
+
+    .product-description {
+        margin: 20px 0;
+        line-height: 1.6;
+        color: var(--dark-color);
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-size: 24px;
+        margin: 30px 0 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--primary-color);
+    }
+
+    .review-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .reviewer-name {
+        font-weight: 600;
+        color: var(--dark-color);
+    }
+
+    .review-date {
+        color: #888;
+        font-size: 14px;
+    }
+
+    .star-rating {
+        color: var(--secondary-color);
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .review-content {
+        color: var(--dark-color);
+        line-height: 1.5;
+    }
+
+    .add-review-form {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-label {
+        color: var(--dark-color);
+        font-weight: 600;
+    }
+
+    .btn-submit {
+        background-color: var(--primary-color);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        color: white;
+        font-weight: 600;
+        margin-top: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-submit:hover {
+        background-color: #5951e5;
+    }
+
+    .merchant-info {
+        background-color: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .merchant-header {
+        font-size: 18px;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
+
+    .rating-summary {
+        background-color: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        text-align: center;
+    }
+
+    .average-rating {
+        font-size: 48px;
+        font-weight: 700;
+        color: var(--secondary-color);
+    }
+
+    .rating-count {
+        color: #888;
+    }
+
+    .rating-bars {
+        margin-top: 15px;
+    }
+
+    .rating-bar-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .rating-label {
+        min-width: 30px;
+    }
+
+    .rating-bar {
+        height: 8px;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        margin: 0 10px;
+        flex-grow: 1;
+        position: relative;
+    }
+
+    .rating-fill {
+        position: absolute;
+        height: 100%;
+        background-color: var(--secondary-color);
+        border-radius: 4px;
+    }
+
+    .rating-percent {
+        min-width: 40px;
+        text-align: right;
+        font-size: 14px;
+        color: #888;
+    }
+</style>
+
+<div class="container product-container">
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-md-5">
+            {% for item in product.images.all %}
+            {% if  item.is_primary %}
+            <img src="{{item.image.url}}" alt="{{ product.name }}" style="max-height: 300px;object-fit: contain;" class="product-image">
+            {% endif%}
+            {% endfor %}
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-7">
+            <h1 class="product-title">{{ product.name }}</h1>
+            {% if product.category %}
+            <div class="product-category">{{ product.category.name }}</div>
+            {% endif %}
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="product-price">₹{{ product.price_after_tax }}</div>
+                    <div class="tax-details">
+                        Price: ₹{{ product.price_before_tax }} + Tax: ₹{{ product.tax }}
+                        {% if product.tax_slab %}
+                        ({{ product.tax_slab.tax_value }}%)
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    {% if product.stock > 10 %}
+                    <div class="stock-info">In Stock ({{ product.stock }})</div>
+                    {% elif product.stock > 0 %}
+                    <div class="stock-info low-stock">Low Stock ({{ product.stock }} left)</div>
+                    {% else %}
+                    <div class="stock-info low-stock">Out of Stock</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="product-description">
+                {{ product.description }}
+                <a href="{%url 'add_to_cart' product.id %}" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart me-1"></i>Add to Cart
+                </a>
+            </div>
+
+            <div class="merchant-info">
+                <div class="merchant-header">Sold by</div>
+                <div>{{ product.merchant.username }}</div>
+                <div class="text-muted small">Member since {{ product.merchant.date_joined|date:"F Y" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating and Reviews Section -->
+    <h2 class="section-title">Ratings & Reviews</h2>
+    
+    <div class="row">
+        <!-- Rating Summary -->
+        <div class="col-md-4">
+            <div class="rating-summary">
+                <div class="average-rating">{{average_rating}}</div>
+                <div class="star-rating">
+                    ★★★★☆
+                </div>
+                <div class="rating-count">Based on {{total_reviews}} reviews</div>
+                
+                <!-- <div class="rating-bars">
+                    <div class="rating-bar-container">
+                        <div class="rating-label">5★</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 60%"></div>
+                        </div>
+                        <div class="rating-percent">60%</div>
+                    </div>
+                    <div class="rating-bar-container">
+                        <div class="rating-label">4★</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 20%"></div>
+                        </div>
+                        <div class="rating-percent">20%</div>
+                    </div>
+                    <div class="rating-bar-container">
+                        <div class="rating-label">3★</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 10%"></div>
+                        </div>
+                        <div class="rating-percent">10%</div>
+                    </div>
+                    <div class="rating-bar-container">
+                        <div class="rating-label">2★</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 5%"></div>
+                        </div>
+                        <div class="rating-percent">5%</div>
+                    </div>
+                    <div class="rating-bar-container">
+                        <div class="rating-label">1★</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 5%"></div>
+                        </div>
+                        <div class="rating-percent">5%</div>
+                    </div>
+                </div> -->
+            </div>
+            
+            <!-- Add Review Form -->
+
+            {% if request.user.is_authenticated %}
+            <div class="add-review-form">
+                <h3 class="mb-3">Write a Review</h3>
+                <form method="post" action="{% url 'add_review' product.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Your Rating</label>
+                        <select class="form-select" id="rating" name="rating">
+                            <option value="5">★★★★★ (5)</option>
+                            <option value="4">★★★★☆ (4)</option>
+                            <option value="3">★★★☆☆ (3)</option>
+                            <option value="2">★★☆☆☆ (2)</option>
+                            <option value="1">★☆☆☆☆ (1)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="review" class="form-label">Your Review</label>
+                        <textarea class="form-control" id="review" name="review" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-submit">Submit Review</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Reviews List -->
+        <div class="col-md-8">
+            <div id="reviews-container">
+                <!-- Sample reviews - These would be dynamically loaded from the database -->
+
+                {% for  review in product.product_reviews.all %}
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-name">{{review.user}}</div>
+                        <div class="review-date">{{review.created_at}}</div>
+                    </div>
+                    <div class="star-rating i">{{review.rating}}/5</div>
+                    <div class="review-content">
+                        {{review.review}}
+                    </div>
+                </div>
+                {% endfor %}
+             
+            </div>
+            
+            <!-- Pagination -->
+            <!-- <nav aria-label="Review pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav> -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize DataTables for product reviews if there are many
+    $(document).ready(function() {
+        // You can uncomment this if you want to use DataTables for the reviews
+        // $('#reviewsTable').DataTable({
+        //     "pageLength": 5,
+        //     "ordering": true,
+        //     "info": false,
+        //     "lengthChange": false
+        // });
+    });
+</script>
+{% endblock %}

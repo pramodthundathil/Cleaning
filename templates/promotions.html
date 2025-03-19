@@ -1,0 +1,138 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<div class="promotions-container">
+    <h2 class="promotions-heading">Current Promotions</h2>
+    
+    <div class="promotion-grid">
+        {% for promotion in promotions %}
+            {% if promotion.is_active %}
+                <div class="promotion-card">
+                    <div class="promotion-image">
+                        <img src="{{ promotion.image.url }}" alt="{{ promotion.title }}">
+                    </div>
+                    <div class="promotion-content">
+                        <h3 class="promotion-title">{{ promotion.title }}</h3>
+                        <p class="promotion-description">{{ promotion.description }}</p>
+                        <div class="promotion-dates">
+                            <span class="promotion-date">{{ promotion.start_date|date:"M d" }} - {{ promotion.end_date|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% empty %}
+            <div class="no-promotions">
+                <p>No active promotions at this time.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .promotions-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .promotions-heading {
+        color: var(--primary-color);
+        margin-bottom: 30px;
+        text-align: center;
+        font-size: 2rem;
+        position: relative;
+    }
+    
+    .promotions-heading:after {
+        content: "";
+        display: block;
+        width: 80px;
+        height: 4px;
+        background: var(--secondary-color);
+        margin: 10px auto;
+    }
+    
+    .promotion-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+    }
+    
+    .promotion-card {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-color: var(--light-color);
+    }
+    
+    .promotion-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .promotion-image {
+        height: 200px;
+        overflow: hidden;
+    }
+    
+    .promotion-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .promotion-card:hover .promotion-image img {
+        transform: scale(1.05);
+    }
+    
+    .promotion-content {
+        padding: 20px;
+    }
+    
+    .promotion-title {
+        color: var(--primary-color);
+        margin-bottom: 10px;
+        font-size: 1.4rem;
+    }
+    
+    .promotion-description {
+        color: var(--dark-color);
+        margin-bottom: 15px;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .promotion-dates {
+        color: var(--secondary-color);
+        font-weight: bold;
+        border-top: 1px solid var(--accent-color);
+        padding-top: 10px;
+    }
+    
+    .no-promotions {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 40px;
+        color: var(--dark-color);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .promotion-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .promotion-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+{% endblock %}

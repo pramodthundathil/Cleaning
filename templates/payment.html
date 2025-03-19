@@ -34,8 +34,11 @@
                     .then(data => {
                         if (data.status === "success") {
                             alert("Payment Successful!");
+                            window.location.href = "{% url 'orders' %}";
                         } else {
                             alert("Payment Failed!");
+                            window.location.href = "{% url 'index' %}";
+
                         }
                     });
                 }

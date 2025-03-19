@@ -26,4 +26,14 @@ urlpatterns = [
     path("chat",views.chat,name="chat"),
 
     path("products",views.products,name="products"),
+    path("product_details/<int:pk>",views.product_details,name="product_details"),
+    path("add_review/<int:pk>",views.add_review, name="add_review"),
+
+
+    path("view_single_order/<int:pk>",views.view_single_order,name="view_single_order"),
+    # path("order_status_update/<int:pk>",views.order_status_update,name="order_status_update"),
+    path("update_order_status/<int:order_id>/<str:status>", views.update_order_status, name="update_order_status"),
+    path("promotions_offers",views.promotions_offers,name="promotions_offers"),
+    path("Add_merchant_promotions",views.Add_merchant_promotions,name="Add_merchant_promotions"),
+    path("delete_promotion/<int:pk>", views.delete_promotion, name="delete_promotion"),
 ]
